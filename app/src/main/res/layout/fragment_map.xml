@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -9,11 +9,9 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.fragment.MapFragment">
+        android:layout_height="match_parent">
 
         <fragment
             android:id="@+id/map"
@@ -29,7 +27,7 @@
             android:layout_gravity="bottom"
             android:layout_margin="10dp"
             android:padding="10dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/map">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,6 +46,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@{product.title}"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toTopOf="@id/tv_description"
@@ -60,6 +60,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
+                    android:ellipsize="end"
                     android:maxLines="1"
                     android:text="@{product.description}"
                     android:textSize="15sp"
@@ -75,21 +76,13 @@
                     android:layout_marginHorizontal="10dp"
                     android:text="@{product.distance}"
                     android:textSize="15sp"
-                    app:layout_constraintBottom_toTopOf="@id/btn_view"
+                    app:drawableStartCompat="@drawable/ic_marker_grey"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/image"
                     app:layout_constraintTop_toBottomOf="@id/tv_description" />
 
-                <Button
-                    android:id="@+id/btn_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:onClick="@{product::onViewButtonClicked}"
-                    android:text="View"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/image"
-                    app:layout_constraintTop_toBottomOf="@id/tv_distance" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 

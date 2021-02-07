@@ -6,7 +6,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.example.openxcellpracticaltest.data.repo.MapRepository
 import com.example.openxcellpracticaltest.model.ProductItem
+import com.google.maps.GeoApiContext
+import com.google.maps.model.DirectionsResult
 import com.google.maps.model.DirectionsRoute
+import com.google.maps.model.LatLng
 
 class MapViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -21,7 +24,19 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
+    fun getDirectionResult(
+        destination: LatLng,
+        origin: LatLng,
+        mGeoApiContext: GeoApiContext
+    ): LiveData<DirectionsResult> =
+        mapRepository.getDirectionResult(destination, origin, mGeoApiContext)
+
     fun addDirectionsToRoom(routes: Array<DirectionsRoute>?) {
         mapRepository.addDirectionsToRoom(routes)
     }
+
+    fun updateListInRoom(updatedList: List<ProductItem>?) {
+        updatedList?.let { mapRepository.addProductInRoom(it) }
+    }
+
 }

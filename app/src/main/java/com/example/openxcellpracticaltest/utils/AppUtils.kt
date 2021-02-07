@@ -2,6 +2,7 @@ package com.example.openxcellpracticaltest.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
+import com.google.maps.model.DirectionsResult
 import com.kaopiz.kprogresshud.KProgressHUD
 
 class AppUtils {
@@ -32,5 +33,6 @@ class AppUtils {
                 if (it.isShowing) it.dismiss()
             }
         }
+
     }
 }
