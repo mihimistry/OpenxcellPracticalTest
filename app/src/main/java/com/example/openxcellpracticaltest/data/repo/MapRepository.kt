@@ -93,9 +93,6 @@ class MapRepository(application: Application) {
             .subscribe()
     }
 
-    fun addDirectionsToRoom(routes: Array<DirectionsRoute>?) {
-    }
-
     fun getDirectionResult(
         destination: LatLng,
         origin: LatLng,

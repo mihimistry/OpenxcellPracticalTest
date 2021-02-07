@@ -13,12 +13,4 @@ class Converters {
     fun convertFromString(mediaString: String): List<ProductMedias> =
         Gson().fromJson(mediaString, object : TypeToken<List<ProductMedias>>() {
         }.type)
-
-    @TypeConverter
-    fun arrayToString(routes: Array<DirectionsRoute>?) = Gson().toJson(routes)
-
-    @TypeConverter
-    fun arrayFromString(routesString: String): Array<DirectionsRoute>? =
-        Gson().fromJson(routesString, object : TypeToken<Array<DirectionsRoute>?>() {
-        }.type)
 }

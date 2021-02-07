@@ -20,20 +20,12 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getProductList() = mapRepository.getProductList()
 
-    fun onViewButtonClicked(view: View) {
-
-    }
-
     fun getDirectionResult(
         destination: LatLng,
         origin: LatLng,
         mGeoApiContext: GeoApiContext
     ): LiveData<DirectionsResult> =
         mapRepository.getDirectionResult(destination, origin, mGeoApiContext)
-
-    fun addDirectionsToRoom(routes: Array<DirectionsRoute>?) {
-        mapRepository.addDirectionsToRoom(routes)
-    }
 
     fun updateListInRoom(updatedList: List<ProductItem>?) {
         updatedList?.let { mapRepository.addProductInRoom(it) }

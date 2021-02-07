@@ -147,8 +147,6 @@ class MainActivity : AppCompatActivity(), OnViewMapClickedListener {
 
     companion object {
         private const val PERMISSION_REQUEST_CODE = 200
-        private const val TAG = "MapActivity"
-        private const val DEFAULT_ZOOM = 15f
         var listener: OnViewMapClickedListener? = null
     }
 
