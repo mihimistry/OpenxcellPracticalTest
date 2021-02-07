@@ -18,6 +18,8 @@ import com.example.openxcellpracticaltest.model.ProductItem
 import com.example.openxcellpracticaltest.ui.fragment.MapFragment.Companion.currentLocation
 import com.example.openxcellpracticaltest.ui.fragment.MapFragment.Companion.mGeoApiContext
 import com.example.openxcellpracticaltest.utils.AppUtils
+import com.example.openxcellpracticaltest.utils.AppUtils.Companion.dismissProgress
+import com.example.openxcellpracticaltest.utils.AppUtils.Companion.showProgress
 import com.example.openxcellpracticaltest.viewmodel.MapViewModel
 import com.google.maps.model.DirectionsResult
 import io.reactivex.rxjava3.core.Observable
@@ -49,10 +51,14 @@ class ProductListFragment(private val application: Application) : Fragment() {
     }
 
     private fun getProductList() {
+        activity?.let { showProgress(it, "Loading..", "Please wait", false) }
+
         productList = viewModel.getProductList()
 
         productList.observe(this, Observer { list ->
             if (list != null) {
+                dismissProgress()
+
                 if (activity?.let { it1 -> AppUtils.isNetworkAvailable(it1) } == true) {
                     if (currentLocation != null)
 
@@ -80,7 +86,7 @@ class ProductListFragment(private val application: Application) : Fragment() {
                         } else
                         Toast.makeText(
                             activity,
-                            "current location not found!",
+                            "Current location not found, Retry!",
                             Toast.LENGTH_SHORT
                         ).show()
 
@@ -90,6 +96,9 @@ class ProductListFragment(private val application: Application) : Fragment() {
                     rv_product.adapter = adapter
                     rv_product.layoutManager = LinearLayoutManager(activity)
                 }
+            } else {
+                Toast.makeText(activity, "Something went wrong!", Toast.LENGTH_SHORT).show()
+                dismissProgress()
             }
         })
     }

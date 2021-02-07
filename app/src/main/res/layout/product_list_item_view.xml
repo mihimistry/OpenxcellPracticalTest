@@ -80,7 +80,7 @@
                 android:id="@+id/view"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
+                android:background="@color/lightGray"
                 app:layout_constraintTop_toBottomOf="@id/product_view" />
 
             <TextView
@@ -90,7 +90,7 @@
                 android:id="@+id/tv_view"
                 android:padding="10dp"
                 android:drawablePadding="10dp"
-                android:text="VIEW"
+                android:text="View on Map"
                 android:textColor="@android:color/holo_blue_dark"
                 android:textSize="15sp"
                 android:textStyle="bold"

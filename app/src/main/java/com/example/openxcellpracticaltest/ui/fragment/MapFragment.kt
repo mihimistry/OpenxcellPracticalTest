@@ -7,7 +7,6 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,14 +15,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.openxcellpracticaltest.R
 import com.example.openxcellpracticaltest.adapter.OnViewMapClickedListener
-import com.example.openxcellpracticaltest.adapter.ProductListAdapter
 import com.example.openxcellpracticaltest.databinding.FragmentMapBinding
 import com.example.openxcellpracticaltest.model.PolylineData
 import com.example.openxcellpracticaltest.model.ProductItem
@@ -38,13 +34,10 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
-import com.google.maps.DirectionsApiRequest
 import com.google.maps.GeoApiContext
-import com.google.maps.PendingResult
 import com.google.maps.internal.PolylineEncoding
 import com.google.maps.model.DirectionsResult
 import kotlinx.android.synthetic.main.fragment_map.*
-import kotlinx.android.synthetic.main.fragment_product_list.*
 
 class MapFragment(private val application: Application) : Fragment(), OnMapReadyCallback,
     OnViewMapClickedListener, GoogleMap.OnPolylineClickListener, GoogleMap.OnMarkerClickListener {
@@ -82,10 +75,13 @@ class MapFragment(private val application: Application) : Fragment(), OnMapReady
 
 
     private fun getProductList() {
+        activity?.let { AppUtils.showProgress(it, "Loading..", "Please wait", false) }
         productList = viewModel.getProductList()
 
         productList.observe(this, Observer { list ->
             if (list != null) {
+                AppUtils.dismissProgress()
+
                 if (activity?.let { it1 -> AppUtils.isNetworkAvailable(it1) } == true) {
                     if (currentLocation != null) {
                         for (product in list) {
@@ -106,7 +102,8 @@ class MapFragment(private val application: Application) : Fragment(), OnMapReady
                                 createMarker(
                                     product.lat,
                                     product.lang,
-                                    product.title
+                                    product.title,
+                                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
                                 )!!
                             )
                         }
@@ -115,7 +112,7 @@ class MapFragment(private val application: Application) : Fragment(), OnMapReady
                     } else {
                         Toast.makeText(
                             activity,
-                            "current location not found!",
+                            "Current location not found, Retry!",
                             Toast.LENGTH_SHORT
                         ).show()
                         getCurrentLocation()
@@ -127,7 +124,8 @@ class MapFragment(private val application: Application) : Fragment(), OnMapReady
                             createMarker(
                                 product.lat,
                                 product.lang,
-                                product.title
+                                product.title,
+                                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
                             )!!
                         )
                     }
@@ -165,7 +163,9 @@ class MapFragment(private val application: Application) : Fragment(), OnMapReady
                     if (currentLocation != null)
                         moveCamera(
                             LatLng(currentLocation!!.latitude, currentLocation!!.longitude),
-                            DEFAULT_ZOOM, "My Location"
+                            DEFAULT_ZOOM,
+                            "My Location",
+                            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
                         )
 
                     map.setOnMarkerClickListener(this)
@@ -176,22 +176,28 @@ class MapFragment(private val application: Application) : Fragment(), OnMapReady
         }
     }
 
-    private fun moveCamera(latLng: LatLng, zoom: Float, title: String) {
+    private fun moveCamera(
+        latLng: LatLng,
+        zoom: Float,
+        title: String,
+        defaultMarker: BitmapDescriptor
+    ) {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
 
-        val markerOptions = MarkerOptions().position(latLng).title(title)
+        val markerOptions = MarkerOptions().position(latLng).title(title).icon(defaultMarker)
         map.addMarker(markerOptions)
     }
 
     private fun createMarker(
         latitude: Double,
         longitude: Double,
-        title: String?
+        title: String?,
+        defaultMarker: BitmapDescriptor
     ): Marker? {
         return map.addMarker(
             MarkerOptions()
                 .position(LatLng(latitude, longitude))
-                .title(title)
+                .title(title).icon(defaultMarker)
         )
     }
 
@@ -241,7 +247,6 @@ class MapFragment(private val application: Application) : Fragment(), OnMapReady
 
     }
 
-
     private fun addPolylines(result: LiveData<DirectionsResult>) {
         result.observe(this, Observer {
             Handler(Looper.getMainLooper()).post(Runnable {
@@ -285,9 +290,15 @@ class MapFragment(private val application: Application) : Fragment(), OnMapReady
                 moveCamera(
                     LatLng(productItem.lat, productItem.lang),
                     DEFAULT_ZOOM,
-                    productItem.title
+                    productItem.title,
+                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
                 )
-                createMarker(currentLocation!!.latitude, currentLocation!!.longitude, "My Location")
+                createMarker(
+                    currentLocation!!.latitude,
+                    currentLocation!!.longitude,
+                    "My Location",
+                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+                )
                 cv_details.visibility = View.VISIBLE
                 getProductDetails(marker)
                 result?.let { addPolylines(it) }
